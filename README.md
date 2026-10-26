@@ -13,7 +13,7 @@
 
 <div align="center">
 
-![GitHub Streak](https://streak-stats.demolab.com?user=neokill01&locale=zh_CN&hide_border=false&border_radius=12&background=0D1117&stroke=30363D&ring=8957E5&fire=A78BFA&currStreakNum=22D3EE&sideNums=22D3EE&currStreakLabel=E5E7EB&sideLabels=9CA3AF&dates=8B949E)
+<img width="100%" alt="GitHub Streak" src="https://streak-stats.demolab.com?user=neokill01&card_width=1000&card_height=230&locale=zh_CN&hide_border=false&border_radius=12&background=0D1117&stroke=30363D&ring=8957E5&fire=A78BFA&currStreakNum=22D3EE&sideNums=22D3EE&currStreakLabel=E5E7EB&sideLabels=9CA3AF&dates=8B949E">
 
 </div>
 
