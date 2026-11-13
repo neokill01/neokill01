@@ -1,0 +1,72 @@
+name: Refresh GitHub stats cards
+
+# 官方公共实例 github-readme-stats.vercel.app 已永久暂停(503 DEPLOYMENT_PAUSED)。
+# 改用维护者发布的 Action，在本仓库内生成静态 SVG，README 用相对路径引用。
+# 只用 GITHUB_TOKEN，无需 PAT / Vercel。刻意不监听 push，避免 bot 提交触发循环。
+
+on:
+  schedule:
+    - cron: "30 0 * * *" # 每天 00:30 UTC 刷新
+  workflow_dispatch: # 支持在 Actions 页手动触发
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate stats card
+        uses: stats-organization/github-readme-stats-action@v2
+        with:
+          card: stats
+          options: 'username=${{ github.repository_owner }}&show_icons=true&include_all_commits=true&hide_border=true&bg_color=0D1117&title_color=22D3EE&icon_color=8957E5&text_color=C9D1D9'
+          path: profile/stats.svg
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fail_on_error: true # 拉取失败时不写 "Something went wrong" 错误卡，保留上一版
+
+      - name: Generate top languages card
+        uses: stats-organization/github-readme-stats-action@v2
+        with:
+          card: top-langs
+          # card_width=455 使新版 455x190 与 stats 卡 467x195 的宽高比一致(2.3947 / 2.3949)，等宽渲染时高度对齐
+          options: 'username=${{ github.repository_owner }}&layout=compact&langs_count=8&card_width=455&hide_border=true&bg_color=0D1117&title_color=22D3EE&text_color=C9D1D9'
+          path: profile/top-langs.svg
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fail_on_error: true
+
+      # 官方卡片带 CSS 淡入动画，静态文件在部分渲染环境（预览器 / 图片缓存）下可能只显示空卡片。
+      # 去掉动画声明，让内容即时完整可见；数据、布局、配色不变。
+      - name: Make cards statically visible
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+
+          for name in ("profile/stats.svg", "profile/top-langs.svg"):
+              path = Path(name)
+              svg = path.read_text(encoding="utf-8")
+              svg = re.sub(r"(\.stagger\s*\{[^}]*?opacity:\s*)0(\s*;)", r"\g<1>1\g<2>", svg, flags=re.S)
+              svg = re.sub(r"\b(?:-webkit-)?animation\s*:\s*[^;}]+;?", "", svg)
+              svg = re.sub(r"<animate\b[^>]*/>", "", svg)
+              path.write_text(svg, encoding="utf-8")
+          PY
+
+      - name: Commit refreshed cards
+        shell: bash
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add profile/stats.svg profile/top-langs.svg
+          if git diff --cached --quiet; then
+            echo "Cards unchanged, skip commit"
+          else
+            git commit -m "chore: refresh GitHub stats cards"
+            git push
+          fi

@@ -3,11 +3,11 @@
 ## 📊 GitHub 统计
 
 <div align="center">
-  <img width="49%" alt="GitHub Stats" src="https://github-readme-stats.vercel.app/api?username=neokill01&show_icons=true&include_all_commits=true&hide_border=true&bg_color=0D1117&title_color=22D3EE&icon_color=8957E5&text_color=C9D1D9">
-  <img width="49%" alt="Top Languages" src="https://github-readme-stats.vercel.app/api/top-langs/?username=neokill01&layout=compact&langs_count=8&card_width=395&hide_border=true&bg_color=0D1117&title_color=22D3EE&text_color=C9D1D9">
+  <img width="49%" alt="GitHub Stats" src="./profile/stats.svg">
+  <img width="49%" alt="Top Languages" src="./profile/top-langs.svg">
 </div>
 
-<!-- 若统计卡出现 "Something went wrong"，说明公共实例被限流：可在 Repo → Settings → Secrets 添加 PAT(METRICS_TOKEN) 后改自建 hosted -->
+<!-- 卡片为仓库内静态 SVG，由 .github/workflows/stats.yml 每日刷新；不依赖 Vercel / PAT / 任何第三方图片服务 -->
 
 ## 🔥 提交统计
 
